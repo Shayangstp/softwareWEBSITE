@@ -20,6 +20,15 @@ import { Box } from "@material-ui/core";
 
 function Header({ isDarkMode, toggleDarkMode }) {
   const [showMenu, setShowMenu] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     document.body.style.backgroundColor = isDarkMode
@@ -49,6 +58,19 @@ function Header({ isDarkMode, toggleDarkMode }) {
       textDecoration: "none",
     },
 
+    navItem: {
+      padding: "0px",
+      margin: "0",
+      "&:hover": {
+        borderBottom: "1px dotted #fff",
+      },
+    },
+
+    // navBar: {
+    //   backgroundColor: scrollPosition > 0 && isDarkMode ? "#fff" : "#333",
+    //   transition: "background-color 0.3s ease-in-out",
+    // },
+
     drawerPaper: {
       backgroundColor: isDarkMode ? "#424242" : "#fff",
       color: isDarkMode ? "#fff" : "#000",
@@ -66,12 +88,13 @@ function Header({ isDarkMode, toggleDarkMode }) {
     <Grid container>
       <Grid item>
         <Stack
+          className={classes.navBar}
           width="90vw"
           height="70px"
           direction="row"
           gap="20px"
           px="10px"
-          justifyContent="space-around"
+          justifyContent="space-between"
           alignItems="center"
           marginLeft="30px"
         >
@@ -83,6 +106,7 @@ function Header({ isDarkMode, toggleDarkMode }) {
                   backgroundColor: isDarkMode ? "transparent" : "transparent",
                   color: isDarkMode ? "#fff" : "#000",
                   marginBottom: "10px",
+                  marginLeft: "70px",
                 }}
               >
                 SOFTWARENAME
@@ -105,15 +129,14 @@ function Header({ isDarkMode, toggleDarkMode }) {
             open={showMenu}
             onClose={handleMenuToggle}
             classes={{ paper: classes.drawerPaper }}
-            sx={{ overflow: "hidden" }}
           >
             <List>
-              {/* <ListItem sx={{ marginLeft: "100px" }}> */}
-              <DarkModeBtn
-                toggleDarkMode={toggleDarkMode}
-                isDarkMode={isDarkMode}
-              />
-              {/* </ListItem> */}
+              <Box sx={{ marginLeft: "130px" }}>
+                <DarkModeBtn
+                  toggleDarkMode={toggleDarkMode}
+                  isDarkMode={isDarkMode}
+                />
+              </Box>
               <Link to="/" className={classes.headerBtn}>
                 <ListItem button>
                   <ListItemText
@@ -153,7 +176,9 @@ function Header({ isDarkMode, toggleDarkMode }) {
           </Drawer>
           <Box
             className={classes.navItems}
-            sx={{ display: { xs: showMenu ? "flex" : "none", md: "flex" } }}
+            sx={{
+              display: { xs: showMenu ? "flex" : "none", md: "flex" },
+            }}
           >
             <Link to="/" className={classes.headerBtn}>
               <Button style={navItem}>Home</Button>
@@ -168,7 +193,20 @@ function Header({ isDarkMode, toggleDarkMode }) {
               <Button style={navItem}>Contact</Button>
             </Link>
             <Link to="/" className={classes.headerBtn}>
-              <Button style={navItem}>Demo</Button>
+              <Button
+                variant="contained"
+                sx={{
+                  fontSize: "13px",
+                  marginTop: "10px",
+                  backgroundColor: isDarkMode ? "#fff" : "#111",
+                  color: isDarkMode ? "#111" : "#fff",
+                  "&:hover": {
+                    background: isDarkMode ? "#ddd" : "#000",
+                  },
+                }}
+              >
+                Demo
+              </Button>
             </Link>
             <Box sx={{ marginLeft: "20px" }}>
               <DarkModeBtn
